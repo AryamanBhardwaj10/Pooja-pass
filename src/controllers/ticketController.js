@@ -50,10 +50,12 @@ exports.bookUserTicket = CatchAsync(async (req, res, next) => {
   //extract date and memberList
   const { ticketDate, memberNames } = { ...req.body }
 
+  const parsedDate = new Date(ticketDate)
+
   //datecrowdinfo
 
   //! not sure if find or findOne
-  const dateWiseCrowdData = await DateWiseInfo.find({ date: ticketDate })
+  const dateWiseCrowdData = await DateWiseInfo.findOne({ date: parsedDate })
   if (!dateWiseCrowdData) {
     return next(new AppError("No tickets for this date"), 400)
   }
@@ -66,20 +68,23 @@ exports.bookUserTicket = CatchAsync(async (req, res, next) => {
   //create a ticket
   const ticket = new Ticket({
     qrCode: req.body.qrCode,
-    ticketDate: ticketDate,
+    ticketDate: parsedDate,
     userId: userId,
     ticketStatus: "booked",
     memberNames: memberNames,
   })
 
   //begin a transaction
+  let session
 
   try {
-    const session = await mongoose.startSession()
+    session = await mongoose.startSession()
     session.startTransaction()
     //save ticket
+    console.log("saving ticket...")
     const savedTicket = await ticket.save({ session })
     //update book count
+    console.log("updating date wise info")
     await DateWiseInfo.findOneAndUpdate(
       { date: ticketDate },
       { $inc: { bookedTickets: memberNames.length } },
@@ -102,7 +107,7 @@ exports.bookUserTicket = CatchAsync(async (req, res, next) => {
     })
   } catch (e) {
     await session.abortTransaction()
-    return next(new AppError("Ticket booking failed", 400))
+    return next(new AppError(`Ticket booking failed ${e.toString()}`, 400))
   }
 })
 

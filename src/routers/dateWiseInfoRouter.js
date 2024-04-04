@@ -13,3 +13,5 @@ router.get("/dateCrowdInfo", dateWiseInfoController.getDateCrowdInfo)
 
 //post specific date data
 router.post("/dateCrowdInfo", dateWiseInfoController.setSpecificDateCrowdInfo)
+
+module.exports = router

@@ -22,8 +22,9 @@ exports.getSpecificDateCrowdInfo = CatchAsync(async (req, res, next) => {
     return next(new AppError("Enter valid date"), 400)
   }
 
-  //! not sure if find or findOne
-  const desiredDate = await DateWiseInfo.find({ date: date })
+  // const parsedDate = new Date(date)
+
+  const desiredDate = await DateWiseInfo.findOne({ date: date })
   if (!desiredDate) {
     return next(new AppError("Date not found", 400))
   }
@@ -46,6 +47,23 @@ exports.createDateCrowdInfo = CatchAsync(async (req, res, next) => {
     status: "success",
     data: {
       dateInfo: newInfo,
+    },
+  })
+})
+
+exports.setSpecificDateCrowdInfo = CatchAsync(async (req, res, next) => {
+  const { date, maxCap } = req.body
+  const parsedDate = new Date(date)
+
+  const newDateInfo = await DateWiseInfo.create({
+    date: parsedDate,
+    maxCap: maxCap,
+  })
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      newDateInfo,
     },
   })
 })

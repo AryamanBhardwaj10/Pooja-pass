@@ -1,6 +1,5 @@
 const express = require("express")
 const ticketController = require("./../controllers/ticketController")
-const auth = require("./../middleware/authMiddleware")
 
 const router = express.Router()
 
@@ -8,7 +7,7 @@ const router = express.Router()
 router.get("/tickets/:userId", ticketController.getUserTickets)
 
 //get all tickets
-router.get("/tickets", auth, ticketController.getAllTickets)
+router.get("/tickets", ticketController.getAllTickets)
 
 //book a ticket
 router.post("/tickets/:userId", ticketController.bookUserTicket)
