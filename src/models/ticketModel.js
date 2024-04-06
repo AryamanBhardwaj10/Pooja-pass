@@ -4,6 +4,7 @@ const ticketSchema = mongoose.Schema({
   qrCode: {
     type: String,
     trim: true,
+    unique: true,
     required: [true, "Ticket QR required"],
   },
   ticketDate: {

@@ -37,20 +37,6 @@ exports.getSpecificDateCrowdInfo = CatchAsync(async (req, res, next) => {
   })
 })
 
-exports.createDateCrowdInfo = CatchAsync(async (req, res, next) => {
-  const newInfo = await DateWiseInfo.create({
-    date: req.body.date,
-    maxCap: req.body.maxCap,
-  })
-
-  res.status(201).json({
-    status: "success",
-    data: {
-      dateInfo: newInfo,
-    },
-  })
-})
-
 exports.setSpecificDateCrowdInfo = CatchAsync(async (req, res, next) => {
   const { date, maxCap } = req.body
   const parsedDate = new Date(date)
@@ -59,6 +45,10 @@ exports.setSpecificDateCrowdInfo = CatchAsync(async (req, res, next) => {
     date: parsedDate,
     maxCap: maxCap,
   })
+
+  if (!newDateInfo) {
+    next(new AppError("New Date Info not created", 400))
+  }
 
   res.status(200).json({
     status: "success",

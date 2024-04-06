@@ -12,6 +12,10 @@ exports.register = CatchAsync(async (req, res, next) => {
     password: req.body.password,
   })
 
+  if (!newUser) {
+    next(new AppError("Could not create ", 500, res))
+  }
+
   //todo: expires-in option
   const token = jwt.sign({ id: newUser._id }, "secret-key")
 
@@ -38,7 +42,7 @@ exports.login = CatchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: email }).select("+password")
 
   if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(AppError("Incorrect email or password"), 401)
+    return next(new AppError("Incorrect email or password"), 401)
   }
 
   const token = jwt.sign({ id: user._id }, "secret-key")
