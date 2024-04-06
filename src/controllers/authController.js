@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken")
 const User = require("./../models/userModel")
 const CatchAsync = require("./../utils/catchAsync")
 const AppError = require("./../utils/appError")
+const auth = require("./../middleware/auth")
 
 //*Register
 
@@ -54,4 +55,19 @@ exports.login = CatchAsync(async (req, res, next) => {
       user: user,
     },
   })
+})
+
+//is token valid
+exports.isTokenValid = CatchAsync(async (req, res, next) => {
+  const token = req.header("x-auth-token")
+  if (!token) {
+    return res.json(false)
+  }
+  const verified = jwt.verify(token, "secret-key")
+  if (!verified) {
+    return res.json(false)
+  }
+  const user = await User.findById(verified.id)
+  if (!user) return res.json(false)
+  res.json(true)
 })
