@@ -85,9 +85,24 @@ class AuthService {
           response: response,
           context: context,
           onSuccess: () async {
+            //!
+            Map<String, dynamic> responseData = jsonDecode(response.body);
+            Map<String, dynamic> userData = responseData['data']['user'];
+            String token = responseData['token'];
+            User user = User(
+              id: userData['_id'],
+              name: userData['name'],
+              email: userData['email'],
+              token: token,
+            );
+
+            //!
+
             //to store token locally
             SharedPreferences pref = await SharedPreferences.getInstance();
-            userProvider.setUser(response.body);
+            // userProvider.setUser(response.body);
+            userProvider.setUserFromModel(user);
+            debugPrint(user.name);
 
             //todo:cross check
             await pref.setString(
@@ -127,21 +142,25 @@ class AuthService {
 
       var response = jsonDecode(tokenRes.body);
 
-      //todo:replace with the required response
       if (response == true) {
-        http.Response userRes = await http
+        var userRes = await http
             .get(Uri.parse('${Constants.uri}/user'), headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': token,
         });
 
-        var a = jsonDecode(userRes.body);
+        var userData = jsonDecode(userRes.body)['data']['user'];
 
-        var userData = a["data"]["user"];
+        // Create user object
+        User user = User(
+          id: userData['_id'],
+          name: userData['name'],
+          email: userData['email'],
+          token: token!,
+        );
 
-        var userJson = jsonEncode(userData);
-
-        userProvider.setUser(userJson);
+        // Set user in user provider
+        userProvider.setUserFromModel(user);
       }
     } catch (e) {
       print(e.toString() + 'AB');

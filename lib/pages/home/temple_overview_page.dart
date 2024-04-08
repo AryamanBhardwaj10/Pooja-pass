@@ -20,7 +20,7 @@ class TempleOverviewPage extends StatefulWidget {
 
 class _TempleOverviewPageState extends State<TempleOverviewPage> {
   //user detail
-  late final User user;
+  User? user;
   //screen width
 
   //temple images string
@@ -41,7 +41,6 @@ class _TempleOverviewPageState extends State<TempleOverviewPage> {
     // TODO: implement initState
 
     super.initState();
-    user = Provider.of<UserProvider>(context).user;
   }
 
   //book now btn press
@@ -110,6 +109,8 @@ class _TempleOverviewPageState extends State<TempleOverviewPage> {
   //
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<UserProvider>(context).user;
+    debugPrint(user!.name);
     var size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
@@ -141,7 +142,7 @@ class _TempleOverviewPageState extends State<TempleOverviewPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Text(
-                    "Welcome,\n${user.name}!",
+                    "Welcome,\n${user!.name}",
                     style: TextStyle(
                         fontSize: 40,
                         color: Colors.white,
