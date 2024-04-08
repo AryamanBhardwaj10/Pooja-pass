@@ -19,19 +19,23 @@ class AuthService {
   Future<void> signUpUser(
       BuildContext context, String name, String email, String password) async {
     try {
-      User user = User(id: 'id', name: name, email: email, token: '');
-
       //
       var userProvider = Provider.of<UserProvider>(context, listen: false);
       final navigator = Navigator.of(context);
       //
       //http req
-      //todo:replace with actual endpoint
+
+      var jsonBody = jsonEncode({
+        'name': name,
+        'email': email,
+        'password': password,
+      });
+
       http.Response res = await http.post(
           Uri.parse(
-            '${Constants.uri}/signup',
+            '${Constants.uri}/register',
           ),
-          body: user.toJson(),
+          body: jsonBody,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8'
           });
@@ -48,7 +52,20 @@ class AuthService {
                   //to store token locally
                   SharedPreferences pref =
                       await SharedPreferences.getInstance();
-                  userProvider.setUser(res.body);
+
+                  Map<String, dynamic> responseData = jsonDecode(res.body);
+                  Map<String, dynamic> userData = responseData['data']['user'];
+                  String token = responseData['token'];
+                  User user = User(
+                    id: userData['_id'],
+                    name: userData['name'],
+                    email: userData['email'],
+                    token: token,
+                  );
+
+                  userProvider.setUserFromModel(user);
+                  debugPrint(user.name);
+
                   //todo:cross check
                   await pref.setString(
                       'x-auth-token', jsonDecode(res.body)['token']);

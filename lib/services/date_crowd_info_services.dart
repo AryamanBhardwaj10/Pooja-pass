@@ -26,7 +26,6 @@ class DateCrowdInfoServices {
           return DateCrowdInfo.fromJson(parsedData);
         } else {
           throw Exception('Api failed to load data: ${res.statusCode}');
-          return null;
         }
       } else {
         throw Exception(

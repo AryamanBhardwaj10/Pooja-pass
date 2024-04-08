@@ -3,6 +3,7 @@ import 'package:pooja_pass/components/logo.dart';
 import 'package:pooja_pass/components/my_btn.dart';
 import 'package:pooja_pass/components/my_textfield.dart';
 import 'package:pooja_pass/services/auth_services.dart';
+import 'package:pooja_pass/utils/utils.dart';
 
 class RegisterPage extends StatelessWidget {
   final void Function()? onPressed;
@@ -22,12 +23,17 @@ class RegisterPage extends StatelessWidget {
 
   //*signup
   void signup(BuildContext context) {
-    _authService.signUpUser(
-      context,
-      nameTextEditingController.text,
-      emailTextEditingController.text,
-      passwordTextEditingController.text,
-    );
+    if (passwordTextEditingController.text ==
+        confirmPasswordTextEditingController.text) {
+      _authService.signUpUser(
+        context,
+        nameTextEditingController.text,
+        emailTextEditingController.text,
+        passwordTextEditingController.text,
+      );
+    } else {
+      showSnackbar(context, "Enter credentials correctly");
+    }
   }
 
   @override
@@ -77,7 +83,7 @@ class RegisterPage extends StatelessWidget {
 
                 //*Confirm password
                 MyTextField(
-                  hintText: "Password",
+                  hintText: "Confirm Password",
                   isObscureText: true,
                   textController: confirmPasswordTextEditingController,
                 ),

@@ -1,14 +1,20 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pooja_pass/components/my_icon_btn.dart';
 import 'package:pooja_pass/components/temple_image_container.dart';
+import 'package:pooja_pass/models/date_crowd_info.dart';
 import 'package:pooja_pass/models/user.dart';
 import 'package:pooja_pass/pages/about_temple_page.dart';
 import 'package:pooja_pass/pages/ticket/book_now_page.dart';
 import 'package:pooja_pass/pages/location_page.dart';
 import 'package:pooja_pass/pages/ticket/my_tickets_page.dart';
 import 'package:pooja_pass/provider/user_provider.dart';
+import 'package:pooja_pass/services/date_crowd_info_services.dart';
+import 'package:pooja_pass/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class TempleOverviewPage extends StatefulWidget {
@@ -58,52 +64,68 @@ class _TempleOverviewPageState extends State<TempleOverviewPage> {
   }
 
   //crowd status
-  void showCrowdStatus(BuildContext context) {
-    //TODO:fetch the maximum cap and number of active devotees
+  void showCrowdStatus(BuildContext context) async {
+    try {
+      int maxCap;
+      int activeCrowd;
 
-    double percent = (activeCrowd / maxCap);
-    Color color;
-    String text;
-    if (percent < 0.4) {
-      color = Colors.green;
-      text = "Low";
-    } else if (percent > 0.75) {
-      color = Colors.red;
-      text = "High";
-    } else {
-      color = Colors.yellow.shade700;
-      text = "Medium";
-    }
-    percent = percent > 1 ? 1 : percent;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text(
-          "Crowd Status",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 34,
-          ),
-        ),
-        contentPadding: const EdgeInsets.all(30),
-        content: CircularPercentIndicator(
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          percent: percent,
-          center: Text(
-            text,
-            style: TextStyle(
-              color: color,
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
+      //fetch current date crowd status
+      DateTime now = DateTime.now();
+
+      DateCrowdInfo? dateCrowdInfo =
+          await DateCrowdInfoServices.fetchDateCrowdInfo(context, now);
+
+      if (dateCrowdInfo != null) {
+        activeCrowd = dateCrowdInfo.bookedTickets;
+        maxCap = dateCrowdInfo.maxCap;
+        double percent = (activeCrowd / maxCap);
+        Color color;
+        String text;
+        if (percent < 0.4) {
+          color = Colors.green;
+          text = "Low";
+        } else if (percent > 0.75) {
+          color = Colors.red;
+          text = "High";
+        } else {
+          color = Colors.yellow.shade700;
+          text = "Medium";
+        }
+        percent = percent > 1 ? 1 : percent;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text(
+              "Crowd Status",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 34,
+              ),
+            ),
+            contentPadding: const EdgeInsets.all(30),
+            content: CircularPercentIndicator(
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              percent: percent,
+              center: Text(
+                text,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              radius: 100,
+              progressColor: color,
+              lineWidth: 20,
+              circularStrokeCap: CircularStrokeCap.round,
             ),
           ),
-          radius: 100,
-          progressColor: color,
-          lineWidth: 20,
-          circularStrokeCap: CircularStrokeCap.round,
-        ),
-      ),
-    );
+        );
+      }
+    } catch (e) {
+      // TODO
+      showSnackbar(context, "Failed to load crowd data\n${e.toString()}");
+    }
   }
 
   //
@@ -143,7 +165,7 @@ class _TempleOverviewPageState extends State<TempleOverviewPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Text(
                     "Welcome,\n${user!.name}",
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 40,
                         color: Colors.white,
                         fontWeight: FontWeight.w800,
@@ -201,7 +223,7 @@ class _TempleOverviewPageState extends State<TempleOverviewPage> {
                           ),
                           MyIconButton(
                             text: "My Tickets",
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.check_circle_outline,
                               color: Colors.white,
                               size: 35,
@@ -224,7 +246,7 @@ class _TempleOverviewPageState extends State<TempleOverviewPage> {
                             bookNow(context);
                           },
                           style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(vertical: 10),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
                               backgroundColor: Colors.purple,
                               foregroundColor: Colors.white),
                           child: const Text(

@@ -10,7 +10,36 @@ import 'package:http/http.dart' as http;
 
 class TicketServices {
   //*getting user tickets
-  Future<List<Ticket>?> getUserTickets(
+  // Future<List<Ticket>?> getUserTickets(
+  //     BuildContext context, String userId) async {
+  //   try {
+  //     http.Response res =
+  //         await http.get(Uri.parse('${Constants.uri}/tickets/$userId'));
+
+  //     if (res.statusCode == 200) {
+  //       final dataBody = jsonDecode(res.body);
+  //       if (dataBody["status"] == 'success') {
+  //         final ticketList = dataBody['data']['tickets'] as List;
+  //         return ticketList
+  //             .map((ticketData) => Ticket.fromJson(ticketData))
+  //             .toList();
+  //       } else {
+  //         //todo:need better error handling
+  //         throw Exception('A P I  response error');
+  //       }
+  //     } else {
+  //       throw Exception("Failed to load data");
+  //     }
+  //   } catch (e) {
+  //     // TODO
+  //     showSnackbar(context, e.toString());
+  //     return null;
+  //   }
+  // }
+
+  //!------
+
+  Future<List<Ticket>> getUserTickets(
       BuildContext context, String userId) async {
     try {
       http.Response res =
@@ -33,9 +62,11 @@ class TicketServices {
     } catch (e) {
       // TODO
       showSnackbar(context, e.toString());
-      return null;
+      return []; // Return an empty list if an error occurs
     }
   }
+
+  //!-------
 
   //*book ticket
   Future<Ticket?> bookTicket(BuildContext context, String userId, String email,
