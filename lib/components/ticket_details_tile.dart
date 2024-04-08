@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:pooja_pass/models/ticket.dart';
 
 class TicketDetailsTile extends StatelessWidget {
+  final Ticket ticket;
   final void Function()? onTap;
-  //Todo: have a ticket object
-  const TicketDetailsTile({super.key, required this.onTap});
+
+  const TicketDetailsTile(
+      {super.key, required this.onTap, required this.ticket});
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +31,8 @@ class TicketDetailsTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildTileData("Date and Time", "30/03/24-9:00AM"),
-            _buildTileData("Memebers ", "5"),
+            _buildTileData("Date", ticket.ticketDate.substring(0, 10)),
+            _buildTileData("Memebers ", ticket.memberNames.length.toString()),
           ],
         ),
       ),

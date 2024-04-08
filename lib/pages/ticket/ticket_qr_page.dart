@@ -1,16 +1,13 @@
 import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 import 'package:flutter/material.dart';
+import 'package:pooja_pass/models/ticket.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
-class TicketQrPage extends StatefulWidget {
-  //TODO: replace the dummy stuff
+class TicketQrPage extends StatelessWidget {
+  final Ticket ticket;
 
-  const TicketQrPage({super.key});
+  const TicketQrPage({Key? key, required this.ticket}) : super(key: key);
 
-  @override
-  State<TicketQrPage> createState() => _TicketQrPageState();
-}
-
-class _TicketQrPageState extends State<TicketQrPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,38 +20,29 @@ class _TicketQrPageState extends State<TicketQrPage> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            Column(
-              children: [
-                Container(
-                  child: //TODO:replace with qr generator
-                      Image.asset(
-                    'assets/images/qr-code.png',
-                    fit: BoxFit.cover,
-                  ),
-                  height: MediaQuery.of(context).size.height * 0.35,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.all(26),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                      bottomRight: Radius.circular(30),
-                      bottomLeft: Radius.circular(30),
-                    ),
+            Container(
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                    bottomRight: Radius.circular(30),
+                    bottomLeft: Radius.circular(30),
                   ),
                 ),
-                DottedDashedLine(
-                    height: 1,
-                    dashWidth: 35,
-                    width: MediaQuery.of(context).size.width * 0.65,
-                    axis: Axis.horizontal),
-              ],
-            ),
+                height: MediaQuery.of(context).size.height * 0.35,
+                width: double.infinity,
+                padding: const EdgeInsets.all(26),
+                child: QrImageView(data: ticket.qrCode)),
+            DottedDashedLine(
+                height: 1,
+                dashWidth: 35,
+                width: MediaQuery.of(context).size.width * 0.65,
+                axis: Axis.horizontal),
             Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.35,
-              padding: const EdgeInsets.all(10),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -64,52 +52,41 @@ class _TicketQrPageState extends State<TicketQrPage> {
                   bottomLeft: Radius.circular(20),
                 ),
               ),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "30/03/24",
-                    style: TextStyle(
+                    ticket.ticketDate.substring(0, 10),
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    "Member 1",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "Member 2",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "Member 3",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "Member 4",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: ticket.memberNames.length,
+                      itemBuilder: (context, index) {
+                        final memberName = ticket.memberNames[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Text(
+                            memberName,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

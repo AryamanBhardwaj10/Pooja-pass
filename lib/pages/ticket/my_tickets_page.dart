@@ -104,13 +104,16 @@ class _MyTicketPageState extends State<MyTicketPage> {
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
                             Ticket ticket = tickets[index];
-                            debugPrint(ticket.qrCode);
+                            debugPrint(ticket.ticketDate);
                             return TicketDetailsTile(
+                              ticket: ticket,
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => TicketQrPage(),
+                                    builder: (context) => TicketQrPage(
+                                      ticket: ticket,
+                                    ),
                                   ),
                                 );
                               },
