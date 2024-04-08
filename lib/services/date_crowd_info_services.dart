@@ -25,7 +25,7 @@ class DateCrowdInfoServices {
 
           return DateCrowdInfo.fromJson(parsedData);
         } else {
-          showSnackbar(context, "API response error");
+          throw Exception('Api failed to load data: ${res.statusCode}');
           return null;
         }
       } else {
@@ -33,7 +33,7 @@ class DateCrowdInfoServices {
             'Failed to load data: ${res.statusCode}'); // Throw exception for non-200 status codes
       }
     } catch (e) {
-      showSnackbar(context, "Error fetching data");
+      showSnackbar(context, e.toString());
       return null;
     }
   }

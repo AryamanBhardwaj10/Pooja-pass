@@ -8,7 +8,7 @@ import 'package:pooja_pass/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:pooja_pass/pages/home/home_page.dart';
 import 'package:pooja_pass/provider/user_provider.dart';
-import 'package:pooja_pass/provider/user_provider.dart';
+
 import 'package:pooja_pass/utils/constants.dart';
 import 'package:pooja_pass/utils/utils.dart';
 import 'package:provider/provider.dart';
@@ -20,11 +20,16 @@ class AuthService {
       BuildContext context, String name, String email, String password) async {
     try {
       User user = User(id: 'id', name: name, email: email, token: '');
+
+      //
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
+      final navigator = Navigator.of(context);
+      //
       //http req
       //todo:replace with actual endpoint
       http.Response res = await http.post(
           Uri.parse(
-            '${Constants.uri}/api/signup',
+            '${Constants.uri}/signup',
           ),
           body: user.toJson(),
           headers: <String, String>{
@@ -35,8 +40,23 @@ class AuthService {
           response: res,
           context: context,
           onSuccess: () {
-            showSnackbar(
-                context, "Account created! login with same credentials");
+            //todo: implement register and login straight away
+            httpErrorHandle(
+                response: res,
+                context: context,
+                onSuccess: () async {
+                  //to store token locally
+                  SharedPreferences pref =
+                      await SharedPreferences.getInstance();
+                  userProvider.setUser(res.body);
+                  //todo:cross check
+                  await pref.setString(
+                      'x-auth-token', jsonDecode(res.body)['token']);
+
+                  navigator.pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                      (route) => false);
+                });
           });
     } catch (e) {
       showSnackbar(context, e.toString());
@@ -48,9 +68,9 @@ class AuthService {
     try {
       var userProvider = Provider.of<UserProvider>(context, listen: false);
       final navigator = Navigator.of(context);
-      //todo: replace with actual endpoint
+
       http.Response response = await http.post(
-          Uri.parse('${Constants.uri}/api/login'),
+          Uri.parse('${Constants.uri}/login'),
           body: jsonEncode(
             {
               'email': email,
@@ -68,13 +88,19 @@ class AuthService {
             //to store token locally
             SharedPreferences pref = await SharedPreferences.getInstance();
             userProvider.setUser(response.body);
+
             //todo:cross check
             await pref.setString(
                 'x-auth-token', jsonDecode(response.body)['token']);
+            debugPrint(pref.getString('x-auth-token'));
+
+            navigator.pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const HomePage()),
+                (route) => false);
           });
-      navigator.pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const HomePage()),
-          (route) => false);
+      // navigator.pushAndRemoveUntil(
+      //     MaterialPageRoute(builder: (context) => const HomePage()),
+      //     (route) => false);
     } catch (e) {
       // ignore: use_build_context_synchronously
       showSnackbar(context, e.toString());
@@ -100,18 +126,26 @@ class AuthService {
           });
 
       var response = jsonDecode(tokenRes.body);
+
       //todo:replace with the required response
       if (response == true) {
         http.Response userRes = await http
-            .get(Uri.parse('${Constants.uri}/'), headers: <String, String>{
+            .get(Uri.parse('${Constants.uri}/user'), headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': token,
         });
 
-        userProvider.setUser(userRes.body);
+        var a = jsonDecode(userRes.body);
+
+        var userData = a["data"]["user"];
+
+        var userJson = jsonEncode(userData);
+
+        userProvider.setUser(userJson);
       }
     } catch (e) {
-      showSnackbar(context, e.toString());
+      print(e.toString() + 'AB');
+      // showSnackbar(context, e.toString());
     }
   }
 

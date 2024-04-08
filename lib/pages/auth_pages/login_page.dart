@@ -62,9 +62,7 @@ class LoginPage extends StatelessWidget {
                 MyBtn(
                   text: "Login",
                   onTap: () {
-                    //Todo:replace with real authentication
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                    loginUser(context);
                   },
                 ),
                 const SizedBox(height: 10),

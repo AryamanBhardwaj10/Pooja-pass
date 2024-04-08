@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,9 +12,10 @@ void httpErrorHandle({
   required BuildContext context,
   required VoidCallback onSuccess,
 }) {
-  if (response.statusCode == 200) {
+  if (response.statusCode == 200 || response.statusCode == 201) {
     onSuccess();
   } else {
-    showSnackbar(context, "Error doing the action");
+    final responseBody = jsonDecode(response.body);
+    showSnackbar(context, responseBody['message']);
   }
 }

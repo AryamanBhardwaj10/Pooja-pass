@@ -38,10 +38,9 @@ class _MyAppState extends State<MyApp> {
       //#f4f4f4
       theme: lightMode,
       debugShowCheckedModeBanner: false,
-      // home: Provider.of<UserProvider>(context).user.token.isEmpty
-      //     ? const LoginOrRegister()
-      //     : const HomePage(),
-      home: LoginOrRegister(),
+      home: Provider.of<UserProvider>(context).user.token.isEmpty
+          ? const LoginOrRegister()
+          : const HomePage(),
     );
   }
 }

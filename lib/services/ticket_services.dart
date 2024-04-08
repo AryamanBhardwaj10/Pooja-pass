@@ -76,7 +76,7 @@ class TicketServices {
       String email, String ticketDate, List<String> memberNames) {
     final currentDate = DateTime.now().toIso8601String();
     final memListStr = memberNames.join(',');
-    final String qrcode = '$email:$currentDate:for:$ticketDate:$memberNames';
+    final String qrcode = '$email:$currentDate:for:$ticketDate:$memListStr';
     return qrcode;
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pooja_pass/components/my_icon_btn.dart';
 import 'package:pooja_pass/components/temple_image_container.dart';
+import 'package:pooja_pass/models/user.dart';
 import 'package:pooja_pass/pages/about_temple_page.dart';
 import 'package:pooja_pass/pages/ticket/book_now_page.dart';
 import 'package:pooja_pass/pages/location_page.dart';
@@ -18,6 +19,8 @@ class TempleOverviewPage extends StatefulWidget {
 }
 
 class _TempleOverviewPageState extends State<TempleOverviewPage> {
+  //user detail
+  late final User user;
   //screen width
 
   //temple images string
@@ -32,6 +35,14 @@ class _TempleOverviewPageState extends State<TempleOverviewPage> {
   //todo:to be fetched using api
   int maxCap = 10000;
   int activeCrowd = 4000;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+    user = Provider.of<UserProvider>(context).user;
+  }
 
   //book now btn press
   void bookNow(BuildContext context) {
@@ -130,7 +141,7 @@ class _TempleOverviewPageState extends State<TempleOverviewPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Text(
-                    "Welcome,\nAryaman!",
+                    "Welcome,\n${user.name}!",
                     style: TextStyle(
                         fontSize: 40,
                         color: Colors.white,
