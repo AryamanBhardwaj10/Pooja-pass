@@ -64,7 +64,6 @@ class AuthService {
                   );
 
                   userProvider.setUserFromModel(user);
-                  debugPrint(user.name);
 
                   //todo:cross check
                   await pref.setString(
@@ -119,12 +118,10 @@ class AuthService {
             SharedPreferences pref = await SharedPreferences.getInstance();
             // userProvider.setUser(response.body);
             userProvider.setUserFromModel(user);
-            debugPrint(user.name);
 
             //todo:cross check
             await pref.setString(
                 'x-auth-token', jsonDecode(response.body)['token']);
-            debugPrint(pref.getString('x-auth-token'));
 
             navigator.pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const HomePage()),

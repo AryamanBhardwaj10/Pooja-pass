@@ -104,7 +104,7 @@ class _MyTicketPageState extends State<MyTicketPage> {
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
                             Ticket ticket = tickets[index];
-                            debugPrint(ticket.ticketDate);
+
                             return TicketDetailsTile(
                               ticket: ticket,
                               onTap: () {

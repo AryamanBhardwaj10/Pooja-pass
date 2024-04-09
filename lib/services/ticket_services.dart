@@ -86,7 +86,6 @@ class TicketServices {
         body: jsonEncode(data),
       );
       if (res.statusCode == 201) {
-        debugPrint(res.body);
         final dataBody = jsonDecode(res.body);
 
         if (dataBody['status'] == "success") {
@@ -99,7 +98,6 @@ class TicketServices {
         throw Exception('Failed to book the ticket');
       }
     } catch (e) {
-      debugPrint(e.toString());
       showSnackbar(context, e.toString());
       return null;
     }

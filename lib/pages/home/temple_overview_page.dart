@@ -132,7 +132,7 @@ class _TempleOverviewPageState extends State<TempleOverviewPage> {
   @override
   Widget build(BuildContext context) {
     user = Provider.of<UserProvider>(context).user;
-    debugPrint(user!.name);
+
     var size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
