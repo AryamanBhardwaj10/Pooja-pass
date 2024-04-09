@@ -11,7 +11,7 @@ router.post("/login", authController.login)
 router.post("/isTokenValid", auth, authController.isTokenValid)
 
 // --------------------
-
+router.get("/user", auth, userController.getUser)
 router.get("/users", userController.getUsers)
 
 module.exports = router

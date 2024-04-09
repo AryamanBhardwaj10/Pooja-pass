@@ -14,3 +14,19 @@ exports.getUsers = CatchAsync(async (req, res, next) => {
     },
   })
 })
+
+exports.getUser = CatchAsync(async (req, res, next) => {
+  const userId = req.user
+
+  const user = await User.findById(userId)
+  if (!user) {
+    //todo:check status code
+    return next(new AppError("User not found", 404))
+  }
+  res.status(200).json({
+    status: "success",
+    data: {
+      user,
+    },
+  })
+})

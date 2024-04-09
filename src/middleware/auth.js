@@ -1,5 +1,6 @@
 const CatchAsync = require("./../utils/catchAsync")
 const jwt = require("jsonwebtoken")
+const AppError = require("./../utils/appError")
 const auth = CatchAsync(async (req, res, next) => {
   const token = req.header("x-auth-token")
   if (!token) {

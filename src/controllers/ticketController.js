@@ -147,7 +147,6 @@ exports.bookUserTicket = CatchAsync(async (req, res, next) => {
 
   //datecrowdinfo
 
-  //! not sure if find or findOne
   const dateWiseCrowdData = await DateWiseInfo.findOne({ date: parsedDate })
   if (!dateWiseCrowdData) {
     return next(new AppError("No tickets for this date"), 400)
